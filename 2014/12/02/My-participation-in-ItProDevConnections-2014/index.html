@@ -6,21 +6,27 @@
     <meta http-equiv="Content-Type" content="text/html" charset="UTF-8" >
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="generator" content="Charalampos Karypidis technical blog">
-    <title>ASP.NET User confirmed email filter attribute - Charalampos Karypidis technical blog</title>
+    <title>My participation in ItProDevConnections 2014 - Charalampos Karypidis technical blog</title>
     <meta name="author" content="charalampos karypidis">
     
     
     
-    <meta name="description" content="Action filters is a very powerful mechanism in an ASP.NET MVC application that gives us the capability of injecting functionality in our application in a centralized and structure way.In this post I a">
+    <meta name="description" content="During last weekend I had the opportunity to attend ItProDevConnection for third time and second time in a row as public speaker. I have to say it was an amazing experience, I so enjoyed myself being">
 <meta property="og:type" content="blog">
-<meta property="og:title" content="ASP.NET User confirmed email filter attribute">
-<meta property="og:url" content="http://xabikostest.github.io/2014/11/05/user-confirmed-filter-attribute/index.html">
+<meta property="og:title" content="My participation in ItProDevConnections 2014">
+<meta property="og:url" content="http://xabikostest.github.io/2014/12/02/My-participation-in-ItProDevConnections-2014/index.html">
 <meta property="og:site_name" content="Charalampos Karypidis technical blog">
-<meta property="og:description" content="Action filters is a very powerful mechanism in an ASP.NET MVC application that gives us the capability of injecting functionality in our application in a centralized and structure way.In this post I a">
-<meta property="og:updated_time" content="2016-04-24T21:34:52.613Z">
+<meta property="og:description" content="During last weekend I had the opportunity to attend ItProDevConnection for third time and second time in a row as public speaker. I have to say it was an amazing experience, I so enjoyed myself being">
+<meta property="og:image" content="http://xabikostest.github.io/keynote.jpg">
+<meta property="og:image" content="http://xabikostest.github.io/speaker1.jpg">
+<meta property="og:image" content="http://xabikostest.github.io/speaker2.jpg">
+<meta property="og:image" content="http://xabikostest.github.io/netMeetup.jpg">
+<meta property="og:image" content="http://xabikostest.github.io/AllTogether1.jpg">
+<meta property="og:image" content="http://xabikostest.github.io/speakers1.jpg">
+<meta property="og:updated_time" content="2016-04-25T18:53:59.453Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="ASP.NET User confirmed email filter attribute">
-<meta name="twitter:description" content="Action filters is a very powerful mechanism in an ASP.NET MVC application that gives us the capability of injecting functionality in our application in a centralized and structure way.In this post I a">
+<meta name="twitter:title" content="My participation in ItProDevConnections 2014">
+<meta name="twitter:description" content="During last weekend I had the opportunity to attend ItProDevConnection for third time and second time in a row as public speaker. I have to say it was an amazing experience, I so enjoyed myself being">
 <meta name="twitter:creator" content="@xabikos">
     
     
@@ -214,19 +220,19 @@
         <div class="post-header main-content-wrap text-left">
     
         <h1 class="post-title" itemprop="headline">
-            ASP.NET User confirmed email filter attribute
+            My participation in ItProDevConnections 2014
         </h1>
     
     <div class="post-meta">
-    <time itemprop="datePublished" content="Wed Nov 05 2014 20:00:00 GMT+0100">
+    <time itemprop="datePublished" content="Tue Dec 02 2014 22:15:00 GMT+0100">
 	
-		    Nov 05, 2014
+		    Dec 02, 2014
     	
     </time>
     
         <span>in </span>
         
-    <a class="category-link" href="/categories/security/">security</a>, <a class="category-link" href="/categories/security/identity-system/">identity system</a>
+    <a class="category-link" href="/categories/conferences/">conferences</a>, <a class="category-link" href="/categories/conferences/public-events/">public events</a>
 
 
     
@@ -235,13 +241,20 @@
     
     <div class="post-content markdown" itemprop="articleBody">
         <div class="main-content-wrap">
-            <p><a href="https://www.asp.net/mvc/overview/older-versions-1/controllers-and-routing/understanding-action-filters-cs/" target="_blank" rel="external">Action filters</a> is a very powerful mechanism in an ASP.NET MVC application that gives us the capability of injecting functionality in our application in a centralized and structure way.<br>In this post I am showing how we can create an action filter attribute in order to decorate our controllers to check if the current user has verified his email address<br>after registering in our system through new ASP.NET <a href="http://www.asp.net/identity" target="_blank" rel="external">Identity system</a>. I am going to create two filters as we want to have this functionality in regular MVC controllers and in Web Api controllers as well.</p>
-<p>First lets see the code for the regular MVC controllers. What we have to do is just derive from ActionFilterAttribute class that lives in System.Web.Mvc namespace and override the OnActionExecuting method.<br><figure class="codeblock codeblock--tabbed"><figcaption><span>UserConfirmedFilterAttribute</span><ul class="tabs"><li class="tab active">cs</li></ul></figcaption><div class="tabs-content"><figure class="highlight cs" style="display: block;"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">[AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = <span class="keyword">true</span>, Inherited = <span class="keyword">true</span>)]</span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">UserConfirmedFilterAttribute</span> : <span class="title">ActionFilterAttribute</span> {</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">override</span> <span class="keyword">void</span> <span class="title">OnActionExecuting</span>(<span class="params">ActionExecutingContext filterContext</span>) </span>{</span><br><span class="line">        <span class="keyword">var</span> userId = filterContext.HttpContext.User.Identity.GetUserId();</span><br><span class="line">        <span class="comment">// User is not logged in so redirect him to log in controller action</span></span><br><span class="line">        <span class="keyword">if</span> (<span class="keyword">string</span>.IsNullOrEmpty(userId)) {</span><br><span class="line">            filterContext.Result = <span class="keyword">new</span> RedirectToRouteResult(<span class="keyword">new</span> RouteValueDictionary(</span><br><span class="line">                        <span class="keyword">new</span> { controller = <span class="string">"Account"</span>, action = <span class="string">"Login"</span>, </span><br><span class="line">                                returnUrl = filterContext.HttpContext.Request.RawUrl }));</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        }</span><br><span class="line"></span><br><span class="line">        <span class="keyword">var</span> userManager = filterContext.HttpContext.GetOwinContext().GetUserManager&lt;ApplicationUserManager&gt;();</span><br><span class="line">        <span class="keyword">if</span> (!userManager.IsEmailConfirmed(userId)) {</span><br><span class="line">            filterContext.Result =</span><br><span class="line">                <span class="keyword">new</span> RedirectToRouteResult(</span><br><span class="line">                    <span class="keyword">new</span> RouteValueDictionary(<span class="keyword">new</span> { controller = <span class="string">"ConstrollerNameToRedirect"</span>, </span><br><span class="line">                                    action = <span class="string">"ActionMethodToRedirect"</span> }));</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        }</span><br><span class="line">        <span class="keyword">base</span>.OnActionExecuting(filterContext);</span><br><span class="line">    }</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure></div></figure></p>
-<p>The code is very simple as in the case the user has confirmed the email the execution flow continues normally. In the opposite case we are able to redirect the user<br>in a specific action of a controller by replacing the corresponding values.</p>
-<p>The code is very similar for Web Api controllers as we can see right below.</p>
-<figure class="codeblock codeblock--tabbed"><figcaption><span>UserConfirmedFilterAttribute</span><ul class="tabs"><li class="tab active">cs</li></ul></figcaption><div class="tabs-content"><figure class="highlight cs" style="display: block;"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">[AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = <span class="keyword">true</span>, Inherited = <span class="keyword">true</span>)]</span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">UserConfirmedWebApiFilterAttribute</span> : <span class="title">ActionFilterAttribute</span> {</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">override</span> Task <span class="title">OnActionExecutingAsync</span>(<span class="params">HttpActionContext actionContext, CancellationToken cancellationToken</span>) </span>{</span><br><span class="line">        <span class="keyword">var</span> userId = actionContext.RequestContext.Principal.Identity.GetUserId();</span><br><span class="line">        <span class="comment">// User is not logged in so redirect him to log in controller action</span></span><br><span class="line">        <span class="keyword">if</span> (<span class="keyword">string</span>.IsNullOrEmpty(userId)) {</span><br><span class="line">            actionContext.Response = actionContext.Request.CreateErrorResponse(HttpStatusCode.Unauthorized,</span><br><span class="line">                <span class="string">"You must be logged in to access this resource"</span>);</span><br><span class="line">            <span class="keyword">return</span> Task.FromResult(<span class="number">0</span>);</span><br><span class="line">        }</span><br><span class="line"></span><br><span class="line">        <span class="keyword">var</span> userManager = actionContext.Request.GetOwinContext().GetUserManager&lt;ApplicationUserManager&gt;();</span><br><span class="line">        <span class="keyword">if</span> (!userManager.IsEmailConfirmed(userId)) {</span><br><span class="line">            actionContext.Response = actionContext.Request.CreateErrorResponse(HttpStatusCode.BadRequest,</span><br><span class="line">                <span class="string">"You must be verify your email address in order to access this resource"</span>);</span><br><span class="line">            <span class="keyword">return</span> Task.FromResult(<span class="number">0</span>);</span><br><span class="line">        }</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">base</span>.OnActionExecutingAsync(actionContext, cancellationToken);</span><br><span class="line">    }</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure></div></figure>
-<p>Here I choose to implement the async version of OnActionExecuting method. If the user has confirmed the email address then the request is served normally.<br>If the user is not logged in or has not confirmed the email a bad request response is returned containing the additional message.</p>
-<p>You can find a complete <a href="https://github.com/xabikos/ActionFilters" target="_blank" rel="external">project</a> containing both of the attributes on Github.</p>
+            <p>During last weekend I had the opportunity to attend <a href="http://www.itprodevconnections.gr/" target="_blank" rel="external">ItProDevConnection</a> for third time and second time in a row as public speaker. I have to say it was an amazing experience, I so enjoyed myself being part of a huge tech community. I met so many interesting people among else and heard about latest trends in development.<br><a id="more"></a> </p>
+<h4 id="The-conference"><a href="#The-conference" class="headerlink" title="The conference"></a>The conference</h4><p><a href="http://www.itprodevconnections.gr/" target="_blank" rel="external">ItProDevConnection</a> is an annual conference that is organized by <a href="http://www.dotnetzone.gr/" target="_blank" rel="external">dotNETZone.gr</a>, <a href="http://autoexec.gr/" target="_blank" rel="external">autoexec.gr</a> and <a href="http://sqlschool.gr/" target="_blank" rel="external">SQLSchool.gr</a> which are some of the biggest technical communities in Greece. The main goal of the conference is to bring together software developers and IT professionals in one event, in order to share knowledge, expertise and of course to give an opportunity to meet some really smart and interesting people. During the event there are parallel sessions regarding IT, software development and some sessions related to both fields. In general is a high quality conference and for sure one of the biggest happening every year in Greece.</p>
+<h4 id="Beginning-and-keynote"><a href="#Beginning-and-keynote" class="headerlink" title="Beginning and keynote"></a>Beginning and keynote</h4><p>The event begun on Saturday 29th of November early in the morning by registration of the attendees and an excellent keynote from <a href="https://twitter.com/@htsavdaris" target="_blank" rel="external">Harry Tsavdaris</a> which is a former member of technical communities and now is responsible for the Information Systems of the Ministry of Economics. He gave us a really nice insight about the problems a huge organization faces and especially the absolute need to be on-line and available under all circumstances. During the keynote the room was full as you can see in the following photo.</p>
+<div class="figure nocaption fig-100" style="width:;"><a class="fancybox" href="keynote.jpg" title="Keynote" data-fancybox-group="itprodev"><img class="fig-img" src="keynote.jpg" alt="Keynote"></a></div><div style="clear:both;"></div>
+<h4 id="My-session"><a href="#My-session" class="headerlink" title="My session"></a>My session</h4><p>This year I had the change to give a presentation for second time in a row and I was quite excited for this. Last year I spoke about <a href="http://www.visualstudio.com/en-us/products/what-is-visual-studio-online-vs.aspx" target="_blank" rel="external">Visual Studio Online</a> and Application Lifecycle Management by using <a href="http://git-scm.com/" target="_blank" rel="external">Git</a>. At that time the subject was really hot as Microsoft had just renamed Team Foundation Service to Visual Studio Online and the Git support was relatively new inside Visual Studio. </p>
+<p>This time I chose to change subject completely and talk about <a href="http://msdn.microsoft.com/en-us/data/ef.aspx" target="_blank" rel="external">Entity Framework</a> and how we can use some of its advance features, like interceptors, to create a multitenant application. You can find more details about the subject in the series of my blog post I wrote recently <a href="http://xabikos.com/multitenant/application%20design/software%20as%20a%20service/2014/11/17/create-a-multitenant-application-with-entity-framework-code-first---part-1.html" target="_blank" rel="external">Part 1</a> <a href="http://xabikos.com/multitenant/application%20design/software%20as%20a%20service/2014/11/18/create-a-multitenant-application-with-entity-framework-code-first---part-2.html" target="_blank" rel="external">Part 2</a> <a href="http://xabikos.com/multitenant/application%20design/software%20as%20a%20service/2014/11/19/create-a-multitenant-application-with-entity-framework-code-first---part-3.html" target="_blank" rel="external">Part 3.</a> It took me a fair amount of time to prepare for the session but at the end I am very satisfied with the result as a lot of people were there to attend and got some good comments at the end. On top of this I think I gave some ideas on how we can use some not well known features of the framework in order to solve some not straightforward problems. At this point I would also like to say a huge THANKS to all the people were present during my session. You can see me in action during my presentation in the two pictures below.</p>
+<div class="figure nocaption fig-50" style="width:;"><a class="fancybox" href="speaker1.jpg" title="My session" data-fancybox-group="itprodev"><img class="fig-img" src="speaker1.jpg" alt="My session"></a></div>
+<div class="figure nocaption fig-50" style="width:;"><a class="fancybox" href="speaker2.jpg" title="my session" data-fancybox-group="itprodev"><img class="fig-img" src="speaker2.jpg" alt="my session"></a></div><div style="clear:both;"></div>
+<iframe src="//www.slideshare.net/slideshow/embed_code/42890889" width="476" height="400" frameborder="0" allowfullscreen></iframe>
+<h4 id="Networking-Socializing"><a href="#Networking-Socializing" class="headerlink" title="Networking - Socializing"></a>Networking - Socializing</h4><p>As last year I managed to meet some new really nice and smart people when not attending the technical sessions. I would like to highlight here that maybe this part of events is even more important than the technical knowledge you get there. We have the change to be among other people who share the same passion about development and technology in general. This year I was quite happy as I met many of the <a href="http://www.meetup.com/Thessaloniki-NET-Meetup/" target="_blank" rel="external">Thessaloniki .NET meetup</a> fellowship and we made the decision to further proceed with our meetings in the near future. You can get a sense of who we are in the following picture.</p>
+<div class="figure nocaption fig-100" style="width:;"><a class="fancybox" href="netMeetup.jpg" title="net meetup" data-fancybox-group="itprodev"><img class="fig-img" src="netMeetup.jpg" alt="net meetup"></a></div><div style="clear:both;"></div>
+<h4 id="End-of-the-event"><a href="#End-of-the-event" class="headerlink" title="End of the event"></a>End of the event</h4><p>On Sunday evening, after two very exciting days and tons of useful info we had to close the event and reschedule it for the next year. During the closing session many presents were given to the attendees and we took some beautiful pictures. In the most left one there are all the attendees with the speakers and organizers and in the right one just the speakers with the awesome stuff that helped with the organization. I am really looking forward for the next event. </p>
+<div class="figure nocaption fig-50" style="width:;"><a class="fancybox" href="AllTogether1.jpg" title="all together" data-fancybox-group="itprodev"><img class="fig-img" src="AllTogether1.jpg" alt="all together"></a></div>
+<div class="figure nocaption fig-50" style="width:;"><a class="fancybox" href="speakers1.jpg" title="speakers" data-fancybox-group="itprodev"><img class="fig-img" src="speakers1.jpg" alt="speakers"></a></div><div style="clear:both;"></div>
 
             
         </div>
@@ -251,7 +264,7 @@
             <div class="post-footer-tags">
                 <span class="text-color-light text-small">TAGGED IN</span><br/>
                 
-    <a class="tag tag--primary tag--small t-link" href="/tags/action-filters/">action filters</a> <a class="tag tag--primary tag--small t-link" href="/tags/asp-net-mvc/">asp.net mvc</a> <a class="tag tag--primary tag--small t-link" href="/tags/asp-net-web-api/">asp.net web api</a>
+    <a class="tag tag--primary tag--small t-link" href="/tags/public-speaker/">public speaker</a>
 
             </div>
         
@@ -260,7 +273,7 @@
         <ul class="post-actions post-action-nav">
             <li class="post-action">
                 
-                    <a class="post-action-btn btn btn--default tooltip--top" href="/2014/12/02/My-participation-in-ItProDevConnections-2014/"  data-tooltip="My participation in ItProDevConnections 2014">
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2015/01/26/Create-an-OWIN-middleware-to-trigger-a-permanent-redirect/"  data-tooltip="ASP.NET - Create an OWIN middleware to trigger a permanent redirect">
                 
                     <i class="fa fa-angle-left"></i>
                     <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
@@ -268,7 +281,7 @@
             </li>
             <li class="post-action">
                 
-                    <a class="post-action-btn btn btn--disabled">
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2014/11/05/user-confirmed-filter-attribute/" data-tooltip="ASP.NET User confirmed email filter attribute">
                 
                     <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
                     <i class="fa fa-angle-right"></i>
@@ -283,17 +296,17 @@
             </a>
         </li>
         <li class="post-action hide-xs">
-            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=http://xabikostest.github.io/2014/11/05/user-confirmed-filter-attribute/">
+            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=http://xabikostest.github.io/2014/12/02/My-participation-in-ItProDevConnections-2014/">
                 <i class="fa fa-google-plus"></i>
             </a>
         </li>
         <li class="post-action hide-xs">
-            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://xabikostest.github.io/2014/11/05/user-confirmed-filter-attribute/">
+            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://xabikostest.github.io/2014/12/02/My-participation-in-ItProDevConnections-2014/">
                 <i class="fa fa-facebook-official"></i>
             </a>
         </li>
         <li class="post-action hide-xs">
-            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=http://xabikostest.github.io/2014/11/05/user-confirmed-filter-attribute/">
+            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=http://xabikostest.github.io/2014/12/02/My-participation-in-ItProDevConnections-2014/">
                 <i class="fa fa-twitter"></i>
             </a>
         </li>
@@ -341,7 +354,7 @@
         <ul class="post-actions post-action-nav">
             <li class="post-action">
                 
-                    <a class="post-action-btn btn btn--default tooltip--top" href="/2014/12/02/My-participation-in-ItProDevConnections-2014/"  data-tooltip="My participation in ItProDevConnections 2014">
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2015/01/26/Create-an-OWIN-middleware-to-trigger-a-permanent-redirect/"  data-tooltip="ASP.NET - Create an OWIN middleware to trigger a permanent redirect">
                 
                     <i class="fa fa-angle-left"></i>
                     <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
@@ -349,7 +362,7 @@
             </li>
             <li class="post-action">
                 
-                    <a class="post-action-btn btn btn--disabled">
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2014/11/05/user-confirmed-filter-attribute/" data-tooltip="ASP.NET User confirmed email filter attribute">
                 
                     <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
                     <i class="fa fa-angle-right"></i>
@@ -364,17 +377,17 @@
             </a>
         </li>
         <li class="post-action hide-xs">
-            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=http://xabikostest.github.io/2014/11/05/user-confirmed-filter-attribute/">
+            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=http://xabikostest.github.io/2014/12/02/My-participation-in-ItProDevConnections-2014/">
                 <i class="fa fa-google-plus"></i>
             </a>
         </li>
         <li class="post-action hide-xs">
-            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://xabikostest.github.io/2014/11/05/user-confirmed-filter-attribute/">
+            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://xabikostest.github.io/2014/12/02/My-participation-in-ItProDevConnections-2014/">
                 <i class="fa fa-facebook-official"></i>
             </a>
         </li>
         <li class="post-action hide-xs">
-            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=http://xabikostest.github.io/2014/11/05/user-confirmed-filter-attribute/">
+            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=http://xabikostest.github.io/2014/12/02/My-participation-in-ItProDevConnections-2014/">
                 <i class="fa fa-twitter"></i>
             </a>
         </li>
@@ -400,17 +413,17 @@
                 <div id="share-options-bar" class="share-options-bar" data-behavior="3">
     <ul class="share-options">
         <li class="share-option">
-            <a class="share-option-btn" target="new" href="https://plus.google.com/share?url=http://xabikostest.github.io/2014/11/05/user-confirmed-filter-attribute/">
+            <a class="share-option-btn" target="new" href="https://plus.google.com/share?url=http://xabikostest.github.io/2014/12/02/My-participation-in-ItProDevConnections-2014/">
                 <i class="fa fa-google-plus"></i><span class="">Share on Google Plus</span>
             </a>
         </li>
         <li class="share-option">
-            <a class="share-option-btn" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://xabikostest.github.io/2014/11/05/user-confirmed-filter-attribute/">
+            <a class="share-option-btn" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://xabikostest.github.io/2014/12/02/My-participation-in-ItProDevConnections-2014/">
                 <i class="fa fa-facebook-official"></i><span>Share on Facebook</span>
             </a>
         </li>
         <li class="share-option">
-            <a class="share-option-btn" target="new" href="https://twitter.com/intent/tweet?text=http://xabikostest.github.io/2014/11/05/user-confirmed-filter-attribute/">
+            <a class="share-option-btn" target="new" href="https://twitter.com/intent/tweet?text=http://xabikostest.github.io/2014/12/02/My-participation-in-ItProDevConnections-2014/">
                 <i class="fa fa-twitter"></i><span>Share on Twitter</span>
             </a>
         </li>
@@ -465,9 +478,9 @@
     
         <script>
              var disqus_config = function () {
-                 this.page.url = 'http://xabikostest.github.io/2014/11/05/user-confirmed-filter-attribute/';
+                 this.page.url = 'http://xabikostest.github.io/2014/12/02/My-participation-in-ItProDevConnections-2014/';
                  
-                    this.page.identifier = '2014/11/05/user-confirmed-filter-attribute/';
+                    this.page.identifier = '2014/12/02/My-participation-in-ItProDevConnections-2014/';
                                   
              };
             (function() {
