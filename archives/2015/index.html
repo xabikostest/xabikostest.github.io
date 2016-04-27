@@ -212,26 +212,26 @@
 <section class="postShorten-group main-content-wrap">
     
     
-    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
+    <article class="postShorten postShorten--thumbnailimg-right" itemscope itemType="http://schema.org/BlogPosting">
         <div class="postShorten-wrap">
             <div class="postShorten-header">
                 <h1 class="postShorten-title" itemprop="headline">
                     
-                        <a class="link-unstyled" href="/2015/01/26/Create-an-OWIN-middleware-to-trigger-a-permanent-redirect/">
-                            ASP.NET - Create an OWIN middleware to trigger a permanent redirect
+                        <a class="link-unstyled" href="/2015/12/15/ASP-NET-5-and-Webpack-part-1/">
+                            ASP.NET 5 and Webpack part 1
                         </a>
                     
                 </h1>
                 <div class="postShorten-meta">
-    <time itemprop="datePublished" content="Mon Jan 26 2015 23:15:00 GMT+0100">
+    <time itemprop="datePublished" content="Tue Dec 15 2015 18:40:00 GMT+0100">
 	
-		    Jan 26, 2015
+		    Dec 15, 2015
     	
     </time>
     
         <span>in </span>
         
-    <a class="category-link" href="/categories/web-application/">web application</a>, <a class="category-link" href="/categories/web-application/interception/">interception</a>, <a class="category-link" href="/categories/web-application/interception/middleware/">middleware</a>
+    <a class="category-link" href="/categories/javascript-module-bundler/">javascript module bundler</a>, <a class="category-link" href="/categories/javascript-module-bundler/javascript-dependencies-management/">javascript dependencies management</a>, <a class="category-link" href="/categories/javascript-module-bundler/javascript-dependencies-management/css-module-bundler/">css module bundler</a>, <a class="category-link" href="/categories/javascript-module-bundler/javascript-dependencies-management/css-module-bundler/css-dependencies-management/">css dependencies management</a>
 
 
     
@@ -239,27 +239,182 @@
             </div>
             
             
-                <div class="postShorten-content" itemprop="articleBody">
-                    <h4 id="OWIN-and-project-Katana"><a href="#OWIN-and-project-Katana" class="headerlink" title="OWIN and project Katana"></a>OWIN and project Katana</h4><p><a href="http://owin.org/" target="_blank" rel="external">OWIN</a> (Open Web Iterface for .NET) is the new way of developing web applications in the .NET ecosystem. It is a great approach as it offers the flexibility of decoupling the application from the hosting environment itself. This means that as long as we develop a Web application on top of OWIN then we can easily host it outside the standard hosting environment so far which is IIS. A quick example is that by using a specific <a href="https://www.nuget.org/packages/Microsoft.Owin.SelfHost/" target="_blank" rel="external">nuget package</a>. As OWIN is just a specification then we need an implementation of this in each platform we want to support. The implementation for Microsoft’s platform is called <a href="http://www.asp.net/aspnet/overview/owin-and-katana/an-overview-of-project-katana" target="_blank" rel="external">Katana</a>.</p>
-<h4 id="OWIN-core-components"><a href="#OWIN-core-components" class="headerlink" title="OWIN core components"></a>OWIN core components</h4><p>OWIN has a very nice and easy to understand architecture as it is closer to HTTP protocol and doesn’t assume any functionality is there because of the hosting layer. All the manipulation has to do with the two main objects that is an HttpRequestMessage and HttpResponseMessage. This is a really good choice of abstracting the actual HTTP layer and it’s an architecture that is very familiar to developers from other platforms like <a href="http://nodejs.org/" target="_blank" rel="external">node.js</a>. On top of this another very interesting and well known pattern that exists also in <a href="http://expressjs.com/" target="_blank" rel="external">Express</a> framework is the middlewares. A middleware is a really simple piece of code that gets a request object as a parameter and can either transform this request and pass it to the next middleware if present or create a response and don’t allow the request to further execute on the server. So a web application could potentially consist of several middlewares that are executed one after the other.</p>
-<h4 id="OWIN-middleware-details"><a href="#OWIN-middleware-details" class="headerlink" title="OWIN middleware details"></a>OWIN middleware details</h4><p>The bare minimum OWIN middleware could look like the code below which the only thing it does is to write some statements as diagnostic and lets the request to proceed by calling the next middleware in the pipeline. </p>
-<figure class="codeblock codeblock--tabbed"><figcaption><span>UserConfirmedFilterAttribute</span><ul class="tabs"><li class="tab active">cs</li></ul></figcaption><div class="tabs-content"><figure class="highlight cs" style="display: block;"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">MinimumMiddleware</span></span><br><span class="line">{</span><br><span class="line">    <span class="keyword">private</span> AppFunc _next;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">Initialize</span>(<span class="params">AppFunc next</span>)</span><br><span class="line">    </span>{</span><br><span class="line">        _next = next;</span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">async</span> Task <span class="title">Invoke</span>(<span class="params">IDictionary&lt;<span class="keyword">string</span>, <span class="keyword">object</span>&gt; environment</span>)</span><br><span class="line">    </span>{</span><br><span class="line">        Debug.WriteLine(<span class="string">"Begin executing request in custom middleware"</span>);</span><br><span class="line">        <span class="keyword">await</span> next.Invoke(environment);</span><br><span class="line">        Debug.WriteLine(<span class="string">"End executing request in custom middleware"</span>);</span><br><span class="line">    }</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure></div></figure>
-<p>In order to use this middleware we have to register it in the StartUp class as below.</p>
-<figure class="codeblock codeblock--tabbed"><figcaption><span>UserConfirmedFilterAttribute</span><ul class="tabs"><li class="tab active">cs</li></ul></figcaption><div class="tabs-content"><figure class="highlight cs" style="display: block;"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">partial</span> <span class="keyword">class</span> <span class="title">Startup</span> {</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">Configuration</span>(<span class="params">IAppBuilder app</span>) </span>{</span><br><span class="line">        <span class="keyword">var</span> customMiddleware = <span class="keyword">new</span> MinimumMiddleware();</span><br><span class="line">        app.Use(customMiddleware);</span><br><span class="line">    }</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure></div></figure>
-<h4 id="Trigger-a-redirect-from-a-middleware"><a href="#Trigger-a-redirect-from-a-middleware" class="headerlink" title="Trigger a redirect from a middleware"></a>Trigger a redirect from a middleware</h4><p>The implementation above gives us just a dictionary of string and object and into this dictionary exists all the useful info like the request itself. A better option is to derive from OwinMiddleware class that gives us access to all the request specific data in a strongly type manner through IOwinContext interface. In the code that follows we can see an example of triggering a permanent redirect from an OWIN middleware and don’t let the request to further processed by the application.</p>
-<figure class="codeblock codeblock--tabbed"><figcaption><span>UserConfirmedFilterAttribute</span><ul class="tabs"><li class="tab active">cs</li></ul></figcaption><div class="tabs-content"><figure class="highlight cs" style="display: block;"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">CheckUrlMiddleware</span> : <span class="title">OwinMiddleware</span></span><br><span class="line">{</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">readonly</span> IUrlChecker _checker;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">CheckLegacyUrlMiddleware</span>(<span class="params">OwinMiddleware next, IUrlChecker checker</span>) : <span class="title">base</span>(<span class="params">next</span>)</span><br><span class="line">    </span>{</span><br><span class="line">        _checker = checker;</span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">async</span> <span class="keyword">override</span> Task <span class="title">Invoke</span>(<span class="params">IOwinContext context</span>)</span><br><span class="line">    </span>{</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">var</span> url = context.Request.Uri;</span><br><span class="line">        <span class="keyword">string</span> urlToRedirect = <span class="string">""</span>;        </span><br><span class="line">        <span class="keyword">if</span> (_checker.NeedsPermanentRedirect(url.AbsoluteUri, <span class="keyword">out</span> urlToRedirect) )</span><br><span class="line">        {</span><br><span class="line">            <span class="comment">// 301 is the status code of permanent redirect</span></span><br><span class="line">            context.Response.StatusCode = <span class="number">301</span>;</span><br><span class="line">            context.Response.Headers.Set(<span class="string">"Location"</span>, urlToRedirect);</span><br><span class="line">        }</span><br><span class="line">        <span class="keyword">else</span></span><br><span class="line">        {</span><br><span class="line">            <span class="keyword">await</span> Next.Invoke(context);</span><br><span class="line">        }</span><br><span class="line">    }</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure></div></figure>
-<p>The IUrlChecker is just an Interface that the implementation of it contains all the business logic if a redirect should take place or not. I use it here also to demonstrate how we can inject dependencies in our middleware in the correct way. The piece of code below shows what we have to do in order this middleware to executed for every request.</p>
-<figure class="codeblock codeblock--tabbed"><figcaption><span>UserConfirmedFilterAttribute</span><ul class="tabs"><li class="tab active">cs</li></ul></figcaption><div class="tabs-content"><figure class="highlight cs" style="display: block;"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">partial</span> <span class="keyword">class</span> <span class="title">Startup</span> {</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">Configuration</span>(<span class="params">IAppBuilder app</span>) </span>{</span><br><span class="line">        <span class="keyword">var</span> urlChecker = DependencyResolver.Current.GetService&lt;IUrlChecker&gt;();</span><br><span class="line">        app.Use&lt;CheckUrlMiddleware&gt;(urlChecker);        </span><br><span class="line">    }</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure></div></figure>
-
+                <div class="postShorten-excerpt" itemprop="articleBody">
+                    <h3 id="Introduction"><a href="#Introduction" class="headerlink" title="Introduction"></a>Introduction</h3><p>This is the first of the two parts about using <a href="http://webpack.github.io/">webpack</a> and the corresponding <a href="https://www.nuget.org/packages/Webpack/">nuget package</a> I created, in an asp.net 5 application.<br>This part acts as an introduction to the reasons behind the need for an alternative approach of static asset management and JavaScript module bundling in an asp.net 5 application.<br>Besides that includes a brief explanation of an example Reactjs application that uses the webpack nuget package. In the second part we will explore the internals of the nuget package itself and dig into webpack’s details.<br>
                     
+                        <a href="/2015/12/15/ASP-NET-5-and-Webpack-part-1/" class="postShorten-excerpt_link link">
+                            Continue reading
+                        </a>
                         
                     
+                </div>
+            
+        </div>
+        
+    </article>
+    
+    
+    <article class="postShorten postShorten--thumbnailimg-right" itemscope itemType="http://schema.org/BlogPosting">
+        <div class="postShorten-wrap">
+            <div class="postShorten-header">
+                <h1 class="postShorten-title" itemprop="headline">
                     
-                        <p>
-                            <a href="/2015/01/26/Create-an-OWIN-middleware-to-trigger-a-permanent-redirect/#post-footer" class="postShorten-excerpt_link link">
-                                Comment and share
-                            </a>
-                        </p>
+                        <a class="link-unstyled" href="/2015/11/11/Execute-multiple-npm-scripts-through-VS-Code-task-runner/">
+                            Execute multiple npm scripts through VS Code task runner
+                        </a>
+                    
+                </h1>
+                <div class="postShorten-meta">
+    <time itemprop="datePublished" content="Wed Nov 11 2015 20:40:00 GMT+0100">
+	
+		    Nov 11, 2015
+    	
+    </time>
+    
+        <span>in </span>
+        
+    <a class="category-link" href="/categories/npm-scripts/">npm scripts</a>, <a class="category-link" href="/categories/npm-scripts/task-runner/">task runner</a>
+
+
+    
+</div>
+            </div>
+            
+            
+                <div class="postShorten-excerpt" itemprop="articleBody">
+                    <h4 id="VS-Code"><a href="#VS-Code" class="headerlink" title="VS Code"></a>VS Code</h4><p><a href="https://code.visualstudio.com">Vs code</a> is one of the new players in the area of editors and has done some really good progres so far on catching up with the competition. It is a lightweight editor which currently supports <a href="https://code.visualstudio.com/docs/languages/overview">mulitple langueges</a> and on top of that it’s <a href="https://code.visualstudio.com/docs/editor/setup">multiplatform</a>. It includes already some great features and more are coming in the near future. Personally I am using it more and more both for front and back end development.<br>
+                    
+                        <a href="/2015/11/11/Execute-multiple-npm-scripts-through-VS-Code-task-runner/" class="postShorten-excerpt_link link">
+                            Continue reading
+                        </a>
+                        
+                    
+                </div>
+            
+        </div>
+        
+    </article>
+    
+    
+    <article class="postShorten postShorten--thumbnailimg-right" itemscope itemType="http://schema.org/BlogPosting">
+        <div class="postShorten-wrap">
+            <div class="postShorten-header">
+                <h1 class="postShorten-title" itemprop="headline">
+                    
+                        <a class="link-unstyled" href="/2015/10/03/Webpack-aliases-and-relative-paths/">
+                            Webpack aliases and relative paths
+                        </a>
+                    
+                </h1>
+                <div class="postShorten-meta">
+    <time itemprop="datePublished" content="Sat Oct 03 2015 12:10:00 GMT+0200">
+	
+		    Oct 03, 2015
+    	
+    </time>
+    
+        <span>in </span>
+        
+    <a class="category-link" href="/categories/javascript-module-bundler/">javascript module bundler</a>, <a class="category-link" href="/categories/javascript-module-bundler/javascript-dependencies-management/">javascript dependencies management</a>
+
+
+    
+</div>
+            </div>
+            
+            
+                <div class="postShorten-excerpt" itemprop="articleBody">
+                    <h4 id="Why-Webpack"><a href="#Why-Webpack" class="headerlink" title="Why Webpack"></a>Why Webpack</h4><p><a href="http://webpack.github.io">Webpack</a> is one of the solutions that are available out there and solves JavaScript reference modules problem. It’s also my favourite tool to use it in the Reactjs project I am involved lately. Webpack provides wider functionality except just referencing external JavaScript code but this is not the scope of this blog spot. In this post I will try to concentrate in a feature of the tool that most examples don’t use it and it’s very important according to my opinion. This is the <a href="https://webpack.github.io/docs/configuration.html#resolve">resolve</a> section of Webpack configuration and how it can help us in day to day development.<br>
+                    
+                        <a href="/2015/10/03/Webpack-aliases-and-relative-paths/" class="postShorten-excerpt_link link">
+                            Continue reading
+                        </a>
+                        
+                    
+                </div>
+            
+        </div>
+        
+    </article>
+    
+    
+    <article class="postShorten postShorten--thumbnailimg-right" itemscope itemType="http://schema.org/BlogPosting">
+        <div class="postShorten-wrap">
+            <div class="postShorten-header">
+                <h1 class="postShorten-title" itemprop="headline">
+                    
+                        <a class="link-unstyled" href="/2015/05/17/ASP-NET-vNext-with-webpack/">
+                            ASP.NET vNext with webpack
+                        </a>
+                    
+                </h1>
+                <div class="postShorten-meta">
+    <time itemprop="datePublished" content="Sun May 17 2015 20:10:00 GMT+0200">
+	
+		    May 17, 2015
+    	
+    </time>
+    
+        <span>in </span>
+        
+    <a class="category-link" href="/categories/javascript-module-bundler/">javascript module bundler</a>, <a class="category-link" href="/categories/javascript-module-bundler/javascript-dependencies-management/">javascript dependencies management</a>, <a class="category-link" href="/categories/javascript-module-bundler/javascript-dependencies-management/css-module-bundler/">css module bundler</a>, <a class="category-link" href="/categories/javascript-module-bundler/javascript-dependencies-management/css-module-bundler/css-dependencies-management/">css dependencies management</a>
+
+
+    
+</div>
+            </div>
+            
+            
+                <div class="postShorten-excerpt" itemprop="articleBody">
+                    <h4 id="Why-I-was-absent"><a href="#Why-I-was-absent" class="headerlink" title="Why I was absent"></a>Why I was absent</h4><p>It is a long time from my last post but so much have happened during this time period. Initially I was involved in the organization of local <a href="http://global.azurebootcamp.net/">Global Azure Bootcamp</a> in <a href="http://www.skgazure.com/">Thessaloniki</a>. It was our first attempt to organize an one day event and we are very satisfied by the result. It is an amazing feeling to be part of a global community for one day. Right after Azure Bootcamp, Microsoft’s biggest development conference took place in San Fransisco. At <a href="http://www.buildwindows.com/">Build</a> tons of new features were announced and I am still straggling to watch all the interesting videos on <a href="http://channel9.msdn.com/events/build/2015/">Channel 9</a>. Lastly I attended the first international development conference that was organized in the city I am living, in Thessaloniki. <a href="http://devitconf.org/">Devit</a> took place on Friday 15th of May and it was very successful and amazingly well organized conference.</p>
+<h4 id="ASP-NET-vNext"><a href="#ASP-NET-vNext" class="headerlink" title="ASP.NET vNext"></a>ASP.NET vNext</h4><p><a href="http://www.asp.net/vnext">asp.net vNext</a> is the next version of the well know web stack framework and I won’t describe it at all as it’s quite easy to find details about it. It’s not yet production ready but that point comes really close. I am very interested on this new web stack and the direction it gets so I am playing with it when the time permits. Among the other changes the core team has done, they also changed the way the client side package management is done. The framework adopts well known practices on the field and adds to the core system tools like <a href="https://www.npmjs.com/">npm</a> and <a href="http://bower.io/">bower</a> package managers and <a href="http://gulpjs.com/">gulp</a> and <a href="http://gruntjs.com/">grunt</a> tasks runners. For the people that are not familiar with basic <a href="https://nodejs.org/">nodejs</a> development and client side package management they should spend some time and study those as it’s part of the next version of asp.net. An excellent place to start the reading is the newly added official <a href="http://docs.asp.net/en/latest/index.html">documentation site</a> of asp.net vNext.<br>
+                    
+                        <a href="/2015/05/17/ASP-NET-vNext-with-webpack/" class="postShorten-excerpt_link link">
+                            Continue reading
+                        </a>
+                        
+                    
+                </div>
+            
+        </div>
+        
+    </article>
+    
+    
+    <article class="postShorten postShorten--thumbnailimg-right" itemscope itemType="http://schema.org/BlogPosting">
+        <div class="postShorten-wrap">
+            <div class="postShorten-header">
+                <h1 class="postShorten-title" itemprop="headline">
+                    
+                        <a class="link-unstyled" href="/2015/03/18/Using-Reactjs-net-in-Web-Forms/">
+                            Using Reactjs.net in Web Forms
+                        </a>
+                    
+                </h1>
+                <div class="postShorten-meta">
+    <time itemprop="datePublished" content="Wed Mar 18 2015 20:00:00 GMT+0100">
+	
+		    Mar 18, 2015
+    	
+    </time>
+    
+        <span>in </span>
+        
+    <a class="category-link" href="/categories/server-side-templating/">server side templating</a>, <a class="category-link" href="/categories/server-side-templating/web-development/">web development</a>
+
+
+    
+</div>
+            </div>
+            
+            
+                <div class="postShorten-excerpt" itemprop="articleBody">
+                    <h4 id="About-React"><a href="#About-React" class="headerlink" title="About React"></a>About React</h4><p><a href="http://facebook.github.io/react/">React</a> is a JavaScript library that allows us to build modern and complex web interfaces. It’s becoming more and more popular and there is a huge <a href="https://twitter.com/hashtag/reactjs">buzz</a> around it. The last is absolutely normal as <a href="https://www.facebook.com/">Facebook</a> is the creator of the library and they have heavily invested on it. They even have developed some architecture guidelines on how to build a React application which is called <a href="http://facebook.github.io/flux/docs/overview.html">Flux</a>. Lately I am involved in a project that we are using these tools and I have to say it is really fun as it is a fresh technology and certainly changes the way I was used to develop web applications. Lastly React is one of the best libraries out there to develop what is called an <a href="http://nerds.airbnb.com/isomorphic-javascript-future-web-apps/">Isomorphic JavaScript</a> application. I won’t explain more why isomorphic looks like a safe choice for the future of the web as this is not the goal of the post.<br>
+                    
+                        <a href="/2015/03/18/Using-Reactjs-net-in-Web-Forms/" class="postShorten-excerpt_link link">
+                            Continue reading
+                        </a>
+                        
                     
                 </div>
             
@@ -271,7 +426,14 @@
     <ul class="pagination">
         
         
-        <li class="pagination-number">page 1 of 1</li>
+        <li class="pagination-next">
+            <a class="btn btn--default btn--small" href="/archives/2015/page/2/">
+                    <span>OLDER POSTS</span>
+                <i class="fa fa-angle-right text-base icon-ml"></i>
+            </a>
+        </li>
+        
+        <li class="pagination-number">page 1 of 2</li>
     </ul>
 </div>
 
